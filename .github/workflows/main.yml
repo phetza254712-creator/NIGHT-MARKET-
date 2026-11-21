@@ -1,4 +1,3 @@
-
 name: NIGHT MARKET TYCOON - Android Build
 
 on:
@@ -23,7 +22,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: npm
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -31,8 +29,15 @@ jobs:
           distribution: temurin
           java-version: 17
 
+      - name: Check Project Files
+        run: |
+          echo "Checking project files..."
+          test -f package.json
+          test -f index.html
+          echo "Project files found."
+
       - name: Install Dependencies
-        run: npm install
+        run: npm install --no-audit --no-fund
 
       - name: Run Tests
         run: npm test
@@ -58,7 +63,13 @@ jobs:
           cd android
           ./gradlew bundleRelease
 
-      - name: Upload APK and AAB
+      - name: Verify Build Files
+        run: |
+          test -f android/app/build/outputs/apk/debug/app-debug.apk
+          test -f android/app/build/outputs/bundle/release/app-release.aab
+          echo "APK and AAB build files found."
+
+      - name: Upload Android Files
         uses: actions/upload-artifact@v4
         with:
           name: NIGHT-MARKET-TYCOON-ANDROID
