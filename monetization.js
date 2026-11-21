@@ -21,31 +21,33 @@ let adReady = false;
 let billingReady = false;
 
 export async function initMonetization() {
-  if (!Capacitor.isNativePlatform()) {
-    return;
-  }
+  if (!Capacitor.isNativePlatform()) return;
 
-  // Initialize AdMob
-  try {
-    await AdMob.initialize({
-      initializeForTesting: ADMOB_TEST_MODE
-    });
+  // Do not initialize AdMob until an Ad Unit ID is configured.
+  // AdMob also requires an Application ID in AndroidManifest.xml.
+  if (ADMOB_REWARDED_AD_UNIT_ID) {
+    try {
+      await AdMob.initialize({
+        initializeForTesting: ADMOB_TEST_MODE
+      });
 
-    if (ADMOB_REWARDED_AD_UNIT_ID) {
       await AdMob.prepareRewardVideoAd({
         adId: ADMOB_REWARDED_AD_UNIT_ID
       });
 
       adReady = true;
+    } catch (error) {
+      adReady = false;
+      console.warn("AdMob initialization failed:", error);
     }
-  } catch (error) {
-    console.warn("AdMob initialization failed:", error);
+  } else {
+    console.info("AdMob skipped: no Rewarded Ad Unit ID configured.");
   }
 
-  // Initialize Google Play Billing
+  // Initialize Google Play Billing independently.
   try {
     const result = await NativePurchases.isBillingSupported();
-    billingReady = !!result.isBillingSupported;
+    billingReady = !!result?.isBillingSupported;
 
     if (!billingReady) {
       console.warn("Google Play Billing is not supported.");
@@ -65,10 +67,9 @@ export async function showRewardedAd(onReward) {
   }
 
   let listener;
+  let earned = false;
 
   try {
-    let earned = false;
-
     listener = await AdMob.addListener(
       RewardAdPluginEvents.Rewarded,
       () => {
@@ -126,12 +127,12 @@ export async function buyProduct(productKey) {
   }
 
   try {
-    const { products } = await NativePurchases.getProducts({
+    const result = await NativePurchases.getProducts({
       productIdentifiers: [productId],
       productType: PURCHASE_TYPE.INAPP
     });
 
-    if (!products || products.length === 0) {
+    if (!result?.products?.length) {
       return {
         ok: false,
         reason: "ไม่พบสินค้า กรุณาตรวจสอบ Product ID ใน Google Play Console"
