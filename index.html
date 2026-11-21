@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="theme-color" content="#101827">
+  <meta name="description" content="สร้างตลาดกลางคืนของคุณเองใน NIGHT MARKET TYCOON">
+  <title>NIGHT MARKET TYCOON</title>
+</head>
+<body>
+  <div id="app">
+    <header class="topbar">
+      <div><b class="brand">🌙 NIGHT MARKET TYCOON</b><small>สร้างตลาดเล็ก สู่ธุรกิจพันล้าน</small></div>
+      <div class="wallet"><span>🪙 <b id="coins">500</b></span><span>💎 <b id="gems">10</b></span></div>
+    </header>
+    <main>
+      <section class="market-wrap">
+        <div class="market-title"><span>ตลาดของคุณ</span><span id="level">เลเวล 1</span></div>
+        <div id="game" aria-label="พื้นที่ตลาด"></div>
+        <div class="hint">แตะร้านค้าเพื่อเก็บรายได้และอัปเกรด</div>
+      </section>
+      <section class="panel">
+        <nav class="tabs"><button class="tab active" data-tab="shops">🏪 ร้านค้า</button><button class="tab" data-tab="missions">🎯 ภารกิจ</button><button class="tab" data-tab="store">💎 ร้านเพชร</button></nav>
+        <div id="tab-content"></div>
+      </section>
+    </main>
+    <footer>เกมอยู่ระหว่างพัฒนา • ความคืบหน้าบันทึกอัตโนมัติ</footer>
+  </div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
