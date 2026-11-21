@@ -1,3 +1,4 @@
+
 name: NIGHT MARKET TYCOON - Android Build
 
 on:
@@ -27,14 +28,15 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: 17
+          java-version: 21
 
       - name: Check Project Files
         run: |
-          echo "Checking project files..."
           test -f package.json
           test -f index.html
-          echo "Project files found."
+          test -f main.js
+          test -f game-state.js
+          test -f capacitor.config.json
 
       - name: Install Dependencies
         run: npm install --no-audit --no-fund
@@ -67,7 +69,6 @@ jobs:
         run: |
           test -f android/app/build/outputs/apk/debug/app-debug.apk
           test -f android/app/build/outputs/bundle/release/app-release.aab
-          echo "APK and AAB build files found."
 
       - name: Upload Android Files
         uses: actions/upload-artifact@v4
@@ -78,4 +79,3 @@ jobs:
             android/app/build/outputs/bundle/release/app-release.aab
           if-no-files-found: error
           retention-days: 14
-          
